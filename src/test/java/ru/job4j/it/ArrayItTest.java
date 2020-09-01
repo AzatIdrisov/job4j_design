@@ -12,7 +12,7 @@ public class ArrayItTest {
     @Test
     public void whenMultiCallhasNextThenTrue() {
         ArrayIt it = new ArrayIt(
-                new int[] {1, 2, 3}
+                new Integer[] {1, 2, 3}
         );
         assertThat(it.hasNext(), is(true));
         assertThat(it.hasNext(), is(true));
@@ -21,7 +21,7 @@ public class ArrayItTest {
     @Test
     public void whenReadSequence() {
         ArrayIt it = new ArrayIt(
-                new int[] {1, 2, 3}
+                new Integer[] {1, 2, 3}
         );
         assertThat(it.next(), is(1));
         assertThat(it.next(), is(2));
@@ -31,7 +31,7 @@ public class ArrayItTest {
     @Test(expected = NoSuchElementException.class)
     public void whenNextFromEmpty() {
         ArrayIt it = new ArrayIt(
-                new int[] {}
+                new Integer[] {}
         );
         it.next();
     }

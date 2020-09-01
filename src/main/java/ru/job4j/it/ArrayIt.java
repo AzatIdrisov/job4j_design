@@ -3,11 +3,11 @@ package ru.job4j.it;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class ArrayIt implements Iterator<Integer> {
-    private final int[] data;
+public class ArrayIt<T> implements Iterator<T> {
+    private final T[] data;
     private int point = 0;
 
-    public ArrayIt(int[] data) {
+    public ArrayIt(T[] data) {
         this.data = data;
     }
 
@@ -17,7 +17,7 @@ public class ArrayIt implements Iterator<Integer> {
     }
 
     @Override
-    public Integer next() {
+    public T next() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
