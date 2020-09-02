@@ -27,11 +27,7 @@ public class SimpleArray<T> implements Iterable<T> {
     }
 
     public void remove(int index) {
-        while (array[index] != null) {
-            array[index] = array[index + 1];
-            index++;
-        }
-        array[index] = null;
+        System.arraycopy(array, index + 1, array, index, array.length - index - 1);
         count--;
     }
 
