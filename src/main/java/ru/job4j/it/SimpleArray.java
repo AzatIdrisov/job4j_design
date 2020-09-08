@@ -27,10 +27,13 @@ public class SimpleArray<T> implements Iterable<T> {
     }
 
     public void remove(int index) {
-        if (index < count && index >= 0) {
-            System.arraycopy(array, index + 1, array, index, array.length - index - 1);
-            count--;
-        }
+        int checkedIndex = Objects.checkIndex(index, count);
+        System.arraycopy(array,
+                checkedIndex + 1,
+                array,
+                checkedIndex,
+                array.length - checkedIndex - 1);
+        count--;
     }
 
     @Override
