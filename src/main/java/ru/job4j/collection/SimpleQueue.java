@@ -12,13 +12,15 @@ public class SimpleQueue<T> {
             throw new NoSuchElementException();
         }
         T rsl;
-        for (int i = 0; i < size - 1; i++) {
-            out.push(in.pop());
-        }
-        rsl = in.pop();
-        size--;
-        for (int i = 0; i < size; i++) {
-            in.push(out.pop());
+        if (out.isEmpty()) {
+            for (int i = 0; i < size; i++) {
+                out.push(in.pop());
+            }
+            rsl = out.pop();
+            size--;
+        } else {
+            rsl = out.pop();
+            size--;
         }
         return rsl;
     }
