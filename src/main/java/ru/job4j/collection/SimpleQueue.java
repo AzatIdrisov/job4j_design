@@ -16,12 +16,9 @@ public class SimpleQueue<T> {
             for (int i = 0; i < size; i++) {
                 out.push(in.pop());
             }
-            rsl = out.pop();
-            size--;
-        } else {
-            rsl = out.pop();
-            size--;
         }
+        rsl = out.pop();
+        size--;
         return rsl;
     }
 
