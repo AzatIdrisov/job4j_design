@@ -21,11 +21,11 @@ public class SimpleHashMapTest {
     @Test
     public void whenMultyplyInsertThenResize() {
         SimpleHashMap<String, String> map = new SimpleHashMap<>(2);
-        map.insert("Test1", "Test map");
-        map.insert("Test2", "Test map");
-        map.insert("Test3", "Test map");
+        map.insert("Test1", "Test map1");
+        map.insert("Test2", "Test map2");
+        map.insert("Test3", "Test map3");
         int expectedSize = map.size();
-        assertThat(expectedSize, is(4));
+        assertThat(expectedSize, is(3));
     }
 
     @Test
