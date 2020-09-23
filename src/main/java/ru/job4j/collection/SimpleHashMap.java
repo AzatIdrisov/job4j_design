@@ -1,6 +1,5 @@
 package ru.job4j.collection;
 
-import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -10,13 +9,14 @@ public class SimpleHashMap<K, V> implements Iterable {
     private Node[] table;
     private int count = 0;
     private int modCount = 0;
+    private final double LOAD_FACTOR = 0.75;
 
     public SimpleHashMap(int size) {
         this.table = new Node[size];
     }
 
     public boolean insert(K key, V value) {
-        if (count == table.length) {
+        if (count / table.length >= LOAD_FACTOR) {
             resize();
         }
         if (key != null) {
@@ -33,13 +33,17 @@ public class SimpleHashMap<K, V> implements Iterable {
     }
 
     public V get(K key) {
-        return (V) table[getIndex(key.hashCode())].getValue();
+        Node<K, V> element = table[getIndex(key.hashCode())];
+        if (key.equals(element.getKey())) {
+            return element.getValue();
+        }
+        return null;
     }
 
     public boolean delete(K key) {
         if (key != null) {
             int index = getIndex(key.hashCode());
-            if (table[index] != null) {
+            if (table[index].getKey().equals(key)) {
                 table[index] = null;
                 count--;
                 modCount++;
@@ -50,15 +54,20 @@ public class SimpleHashMap<K, V> implements Iterable {
     }
 
     private int getIndex(int hash) {
-        return hash % table.length;
+        return Math.abs(hash) % table.length;
     }
 
     public void resize() {
-        table = Arrays.copyOf(table, table.length * 2);
+        Node[] tempTable = table;
+        table = new Node[table.length * 2];
+        for (Node<K, V> node : tempTable) {
+            insert(node.getKey(), node.getValue());
+            count--;
+        }
     }
 
     public int size() {
-        return table.length;
+        return count;
     }
 
     @Override
@@ -76,6 +85,7 @@ public class SimpleHashMap<K, V> implements Iterable {
                 for (int i = cursor; i < table.length; i++) {
                     if (table[i] != null) {
                         result = true;
+                        cursor = i;
                         break;
                     }
                 }
@@ -86,9 +96,6 @@ public class SimpleHashMap<K, V> implements Iterable {
             public V next() {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
-                }
-                while (table[cursor] == null && cursor < table.length) {
-                    cursor++;
                 }
                 return (V) table[cursor++].getValue();
             }
