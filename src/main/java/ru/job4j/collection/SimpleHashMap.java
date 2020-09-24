@@ -5,11 +5,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class SimpleHashMap<K, V> implements Iterable {
-
+    private final static double LOAD_FACTOR = 0.75;
     private Node[] table;
     private int count = 0;
     private int modCount = 0;
-    private final double LOAD_FACTOR = 0.75;
 
     public SimpleHashMap(int size) {
         this.table = new Node[size];
@@ -27,6 +26,8 @@ public class SimpleHashMap<K, V> implements Iterable {
                 count++;
                 modCount++;
                 return true;
+            } else if (table[index].getKey().equals(key)) {
+                table[index].setValue(value);
             }
         }
         return false;
@@ -113,6 +114,10 @@ public class SimpleHashMap<K, V> implements Iterable {
 
         public K getKey() {
             return key;
+        }
+
+        public void setValue(V value) {
+            this.value = value;
         }
 
         public V getValue() {
