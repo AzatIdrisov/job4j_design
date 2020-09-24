@@ -6,7 +6,12 @@ public class User {
 
     private String name;
     private int children;
-    private Calendar birthday;
+    private Calendar birthday = null;
+
+    public User(String name, int children) {
+        this.name = name;
+        this.children = children;
+    }
 
     public String getName() {
         return name;
@@ -31,4 +36,5 @@ public class User {
     public void setBirthday(Calendar birthday) {
         this.birthday = birthday;
     }
+
 }
