@@ -1,13 +1,14 @@
 package ru.job4j.collection;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Analize {
 
     public Info diff(List<User> previous, List<User> current) {
         Info info = new Info();
-        List<User> generalUsers = Analize.getGeneralUsers(previous, current, info);
+        Map<Integer, User> generalUsers = Analize.getGeneralUsers(previous, current, info);
         Analize.countDeletedUsers(previous, current, info);
         Analize.countChangedUsers(previous, generalUsers, info);
         return info;
@@ -24,11 +25,12 @@ public class Analize {
         return rsl;
     }
 
-    public static List<User> getGeneralUsers(List<User> previous, List<User> current, Info info) {
-        List<User> generalUsers = new ArrayList<>();
+    public static Map<Integer, User> getGeneralUsers(List<User> previous,
+                                                     List<User> current, Info info) {
+        Map<Integer, User> generalUsers = new HashMap<Integer, User>();
         for (User currentUser : current) {
             if (contains(currentUser, previous)) {
-                generalUsers.add(currentUser);
+                generalUsers.put(currentUser.getId(), currentUser);
             } else {
                 info.setAdded(info.getAdded() + 1);
             }
@@ -44,10 +46,12 @@ public class Analize {
         }
     }
 
-    public static void countChangedUsers(List<User> previous, List<User> generalUsers, Info info) {
-        for (User general : generalUsers) {
+    public static void countChangedUsers(List<User> previous,
+                                         Map<Integer, User> generalUsers, Info info) {
+        for (Integer general : generalUsers.keySet()) {
             for (User prev : previous) {
-                if (general.getId() == prev.getId() && !general.getName().equals(prev.getName())) {
+                if (general == prev.getId()
+                        && !generalUsers.get(general).getName().equals(prev.getName())) {
                     info.setChanged(info.getChanged() + 1);
                 }
             }
