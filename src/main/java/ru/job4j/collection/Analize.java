@@ -3,14 +3,26 @@ package ru.job4j.collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Analize {
 
     public Info diff(List<User> previous, List<User> current) {
         Info info = new Info();
-        Map<Integer, User> generalUsers = Analize.getGeneralUsers(previous, current, info);
-        Analize.countDeletedUsers(previous, current, info);
-        Analize.countChangedUsers(previous, generalUsers, info);
+        Map<Integer, User> currentUsers = new HashMap<Integer, User>();
+        for (User user : current) {
+            currentUsers.put(user.getId(), user);
+        }
+        for (User user : previous) {
+            User temp;
+            temp = currentUsers.remove(user.getId());
+            if (temp == null) {
+                info.setDeleted(info.getDeleted() + 1);
+            } else if (!temp.equals(user)) {
+                info.setChanged(info.getChanged() + 1);
+            }
+        }
+        info.setAdded(currentUsers.size());
         return info;
     }
 
@@ -23,39 +35,6 @@ public class Analize {
             }
         }
         return rsl;
-    }
-
-    public static Map<Integer, User> getGeneralUsers(List<User> previous,
-                                                     List<User> current, Info info) {
-        Map<Integer, User> generalUsers = new HashMap<Integer, User>();
-        for (User currentUser : current) {
-            if (contains(currentUser, previous)) {
-                generalUsers.put(currentUser.getId(), currentUser);
-            } else {
-                info.setAdded(info.getAdded() + 1);
-            }
-        }
-        return generalUsers;
-    }
-
-    public static void countDeletedUsers(List<User> previous, List<User> current, Info info) {
-        for (User prevUser : previous) {
-            if (!contains(prevUser, current)) {
-                info.setDeleted(info.getDeleted() + 1);
-            }
-        }
-    }
-
-    public static void countChangedUsers(List<User> previous,
-                                         Map<Integer, User> generalUsers, Info info) {
-        for (Integer general : generalUsers.keySet()) {
-            for (User prev : previous) {
-                if (general == prev.getId()
-                        && !generalUsers.get(general).getName().equals(prev.getName())) {
-                    info.setChanged(info.getChanged() + 1);
-                }
-            }
-        }
     }
 
     public static class User {
@@ -73,6 +52,24 @@ public class Analize {
 
         public String getName() {
             return name;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            User user = (User) o;
+            return id == user.id
+                    && Objects.equals(name, user.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, name);
         }
     }
 
