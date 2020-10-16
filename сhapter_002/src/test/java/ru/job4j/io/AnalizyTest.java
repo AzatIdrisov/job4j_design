@@ -1,30 +1,84 @@
 package ru.job4j.io;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.*;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class AnalizyTest {
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void whenSeveralPeriodsUnavailable() {
-        String source = "./data/log_with_several_period_unavailable.log";
-        String target = "./data/res_with_several_period_unavailable.log";
+    public void whenSeveralPeriodsUnavailable() throws IOException {
+        File source = folder.newFile("source.txt");
+        File target = folder.newFile("target.txt");
+        try (PrintWriter out = new PrintWriter(source)) {
+            out.println("500 10:57:01\n"
+                    + "\n"
+                    + "400 10:58:01\n"
+                    + "\n"
+                    + "200 10:59:01\n"
+                    + "\n"
+                    + "500 11:01:02\n"
+                    + "\n"
+                    + "200 11:02:02");
+        }
         Analizy analizy = new Analizy();
-        analizy.unavailable(source, target);
+        analizy.unavailable(source.getAbsolutePath(), target.getAbsolutePath());
+        StringBuilder rsl = new StringBuilder();
+        try (BufferedReader in = new BufferedReader(new FileReader(target))) {
+            in.lines().forEach(rsl::append);
+        }
+        assertThat(rsl.toString(), is("10:57:01;10:59:01;"
+                + "11:01:02;11:02:02;"));
     }
 
     @Test
-    public void whenHasNotErrors() {
-        String source = "./data/log_without_errors.log";
-        String target = "./data/res_without_errors.log";
+    public void whenHasNotErrors() throws IOException {
+        File source = folder.newFile("source.txt");
+        File target = folder.newFile("target.txt");
+        try (PrintWriter out = new PrintWriter(source)) {
+            out.println("200 10:57:01\n"
+                    + "\n"
+                    + "300 10:58:01\n"
+                    + "\n"
+                    + "200 10:59:01\n"
+                    + "\n"
+                    + "300 11:01:02\n"
+                    + "\n"
+                    + "200 11:02:02");
+        }
         Analizy analizy = new Analizy();
-        analizy.unavailable(source, target);
+        analizy.unavailable(source.getAbsolutePath(), target.getAbsolutePath());
+        StringBuilder rsl = new StringBuilder();
+        try (BufferedReader in = new BufferedReader(new FileReader(target))) {
+            in.lines().forEach(rsl::append);
+        }
+        assertThat(rsl.toString(), is(""));
     }
 
     @Test
-    public void whenHasOnePeriodUnavailable() {
-        String source = "./data/log_with_one_period_unavailable.log";
-        String target = "./data/res_with_one_period_unavailable.log";
+    public void whenHasOnePeriodUnavailable() throws IOException {
+        File source = folder.newFile("source.txt");
+        File target = folder.newFile("target.txt");
+        try (PrintWriter out = new PrintWriter(source)) {
+            out.println("500 10:57:01\n"
+                    + "\n"
+                    + "400 10:58:01\n"
+                    + "\n"
+                    + "200 10:59:01\n");
+        }
         Analizy analizy = new Analizy();
-        analizy.unavailable(source, target);
+        analizy.unavailable(source.getAbsolutePath(), target.getAbsolutePath());
+        StringBuilder rsl = new StringBuilder();
+        try (BufferedReader in = new BufferedReader(new FileReader(target))) {
+            in.lines().forEach(rsl::append);
+        }
+        assertThat(rsl.toString(), is("10:57:01;10:59:01;"));
     }
 }
