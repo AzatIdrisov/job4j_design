@@ -14,7 +14,6 @@ public class Analizy {
         try (BufferedReader read = new BufferedReader(new FileReader(source))) {
             String line = read.readLine();
             while (line != null) {
-                System.out.println(line);
                 if (line.equals("")) {
                     line = read.readLine();
                     continue;
