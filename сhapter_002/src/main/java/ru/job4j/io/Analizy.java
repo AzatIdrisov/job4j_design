@@ -15,18 +15,18 @@ public class Analizy {
             String line = read.readLine();
             while (line != null) {
                 System.out.println(line);
-                    if (line.equals("")) {
-                        line = read.readLine();
-                        continue;
-                    }
-                    if (Integer.parseInt(line.substring(0, 3)) >= 400 && startTime.equals("")) {
-                        startTime = line.substring(4);
-                    }
-                    if (Integer.parseInt(line.substring(0, 3)) < 400 && !startTime.equals("")) {
-                        lastTime = line.substring(4);
-                        result.add(startTime + ";" + lastTime + ";");
-                        startTime = "";
-                    }
+                if (line.equals("")) {
+                    line = read.readLine();
+                    continue;
+                }
+                if (Integer.parseInt(line.substring(0, 3)) >= 400 && startTime.equals("")) {
+                    startTime = line.substring(4);
+                }
+                if (Integer.parseInt(line.substring(0, 3)) < 400 && !startTime.equals("")) {
+                    lastTime = line.substring(4);
+                    result.add(startTime + ";" + lastTime + ";");
+                    startTime = "";
+                }
                 line = read.readLine();
             }
         } catch (Exception e) {
@@ -37,11 +37,6 @@ public class Analizy {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private boolean checkError(String logLine) {
-        boolean result = true;
-        return result;
     }
 
     public static void main(String[] args) {
