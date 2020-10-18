@@ -11,8 +11,14 @@ import java.util.function.Predicate;
 public class Search {
 
     public static void main(String[] args) throws IOException {
-        Path start = Paths.get(".");
-        search(start, file -> file.getName().endsWith(".js")).forEach(System.out::println);
+        if (args[0] == null) {
+            throw new IllegalArgumentException("Root folder is null");
+        }
+        if (args[1] == null) {
+            throw new IllegalArgumentException("File extension is not given");
+        }
+        Path start = Paths.get(args[0]);
+        search(start, file -> file.getName().endsWith(args[1])).forEach(System.out::println);
     }
 
     public static List<Path> search(Path root, Predicate<File> predicate) throws IOException {
