@@ -20,7 +20,7 @@ public class SearchTest {
     public void whenDirectoryHaveOneJSFile() throws IOException {
         File source = folder.newFile("test.js");
         Path path = source.toPath();
-        List<Path> rsl = Search.search(path, "js");
+        List<Path> rsl = Search.search(path, file -> file.getName().endsWith(".js"));
         assertThat(rsl.size(), is(1));
     }
 
@@ -28,7 +28,7 @@ public class SearchTest {
     public void whenDirectoryHaveNotJSFile() throws IOException {
         File source = folder.newFile("test.txt");
         Path path = source.toPath();
-        List<Path> rsl = Search.search(path, "js");
+        List<Path> rsl = Search.search(path, file -> file.getName().endsWith(".js"));
         assertThat(rsl.size(), is(0));
     }
 }
