@@ -1,14 +1,29 @@
 package ru.job4j.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class PrintFiles implements FileVisitor<Path> {
+
+    private Predicate<File> predicate;
+    private List<Path> files = new ArrayList<>();
+
+    public PrintFiles(Predicate<File> predicate) {
+        this.predicate = predicate;
+    }
+
+    public List<Path> getFiles() {
+        return files;
+    }
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir,
@@ -18,7 +33,9 @@ public class PrintFiles implements FileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        System.out.println(file.toAbsolutePath());
+        if (predicate.test(file.toFile())) {
+            files.add(file);
+        }
         return CONTINUE;
     }
 
