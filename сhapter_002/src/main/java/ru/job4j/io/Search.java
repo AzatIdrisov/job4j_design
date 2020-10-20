@@ -14,10 +14,7 @@ public class Search {
         if (args.length == 0) {
             throw new IllegalArgumentException("Root folder and file extension are not given");
         }
-        if (args[0] == null) {
-            throw new IllegalArgumentException("Root folder is null");
-        }
-        if (args.length == 1 || args[1] == null) {
+        if (args.length == 1) {
             throw new IllegalArgumentException("File extension is not given");
         }
         Path start = Paths.get(args[0]);
