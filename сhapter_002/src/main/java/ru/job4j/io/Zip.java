@@ -1,38 +1,39 @@
 package ru.job4j.io;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class Zip {
 
-    public void packFiles(List<File> sources, File target) {
-        try (ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(
-                new FileOutputStream(target)))) {
-            for (File file : sources) {
-                zip.putNextEntry(new ZipEntry(file.getPath()));
-                try (BufferedInputStream out = new BufferedInputStream(new FileInputStream(file))) {
-                    zip.write(out.readAllBytes());
-                }
+    public void packFiles(File fileToZip, String fileName, ZipOutputStream zipOut)
+            throws IOException {
+        if (fileToZip.isHidden()) {
+            return;
+        }
+        if (fileToZip.isDirectory()) {
+            if (fileName.endsWith("/")) {
+                zipOut.putNextEntry(new ZipEntry(fileName));
+                zipOut.closeEntry();
+            } else {
+                zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+                zipOut.closeEntry();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            File[] children = fileToZip.listFiles();
+            for (File childFile : children) {
+                packFiles(childFile, fileName + "/" + childFile.getName(), zipOut);
+            }
+            return;
         }
-    }
-
-    public List<File> getFilesForPacking(Path directory, String excludedFiles) {
-        List<File> files = new ArrayList<>();
-        try {
-            Search.search(directory, f -> !f.getName().endsWith(excludedFiles))
-                    .forEach(f -> files.add(f.toFile()));
-        } catch (IOException e) {
-            e.printStackTrace();
+        FileInputStream fis = new FileInputStream(fileToZip);
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        zipOut.putNextEntry(zipEntry);
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = fis.read(bytes)) >= 0) {
+            zipOut.write(bytes, 0, length);
         }
-        return files;
+        fis.close();
     }
 
     public void packSingleFile(File source, File target) {
@@ -47,13 +48,16 @@ public class Zip {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ArgZip zipArguments = new ArgZip(args);
         if (zipArguments.valid()) {
             Zip zip = new Zip();
-            List<File> files = zip.getFilesForPacking(Paths.get(zipArguments.directory()),
-                    zipArguments.exclude());
-            zip.packFiles(files, new File(zipArguments.output()));
+            FileOutputStream fos = new FileOutputStream(zipArguments.output());
+            ZipOutputStream zipOut = new ZipOutputStream(fos);
+            File directoryToZip = new File(zipArguments.directory());
+            zip.packFiles(directoryToZip, zipArguments.output(), zipOut);
+            zipOut.close();
+            fos.close();
         }
     }
 }
