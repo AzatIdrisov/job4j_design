@@ -1,10 +1,8 @@
 package ru.job4j.io;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+import java.util.function.Function;
 
 public class ConsoleChat {
     private static final String OUT = "закончить";
@@ -12,10 +10,14 @@ public class ConsoleChat {
     private static final String CONTINUE = "продолжить";
     private final String path;
     private final String botAnswers;
+    private final Map<String, Function<Integer, Integer>> dispatch = new HashMap<>();
 
     public ConsoleChat(String path, String botAnswers) {
         this.path = path;
         this.botAnswers = botAnswers;
+        this.dispatch.put(OUT, out());
+        this.dispatch.put(STOP, pause());
+        this.dispatch.put(CONTINUE, proceed());
     }
 
     public String getPath() {
@@ -27,8 +29,8 @@ public class ConsoleChat {
     }
 
     public void run() {
-        boolean working = true;
-        boolean pause = false;
+        int working = 0;
+        int pause = 0;
         Scanner scanner = new Scanner(System.in);
         List<String> answers = new ArrayList<>();
         try {
@@ -44,19 +46,12 @@ public class ConsoleChat {
         System.out.println("Введите сообщение");
         try (PrintWriter out = new PrintWriter(new BufferedOutputStream(
                 new FileOutputStream(getPath())))) {
-            while (working) {
+            while (working >= 0) {
                 String message = scanner.nextLine();
                 out.println(message);
-                if (message.equals(STOP)) {
-                    pause = true;
-                }
-                if (message.equals(CONTINUE)) {
-                    pause = false;
-                }
-                if (message.equals(OUT)) {
-                    working = false;
-                }
-                if (!message.equals(OUT) && !pause && !message.equals(CONTINUE)) {
+                pause = dispatch.getOrDefault(message, stub()).apply(pause);
+                working = dispatch.getOrDefault(message, stub()).apply(working);
+                if (pause == 0) {
                     String answer = answers.get(rand.nextInt(answers.size()));
                     System.out.println(answer);
                     out.println(answer);
@@ -65,6 +60,30 @@ public class ConsoleChat {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Function<Integer, Integer> pause() {
+        return (flag) -> {
+            return 1;
+        };
+    }
+
+    public Function<Integer,  Integer> proceed() {
+        return (flag) -> {
+            return 0;
+        };
+    }
+
+    public Function<Integer, Integer> out() {
+        return (flag) -> {
+            return -1;
+        };
+    }
+
+    public Function<Integer, Integer> stub() {
+        return (flag) -> {
+            return flag;
+        };
     }
 
     public static void main(String[] args) {
