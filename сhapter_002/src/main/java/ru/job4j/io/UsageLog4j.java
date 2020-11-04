@@ -8,17 +8,10 @@ public class UsageLog4j {
     private static final Logger LOG = LoggerFactory.getLogger(UsageLog4j.class.getName());
 
     public static void main(String[] args) {
-        String name = "Petr Arsentev";
-        int height = 180;
-        long  dist = 5555;
-        short num = 230;
-        byte age = 33;
-        char type = 'A';
-        float weight = 77.8f;
-        double salary = 45000.5;
-        boolean sleep = false;
-        LOG.debug("User info name : {}, age : {}, height : {}, dist : {}, num : {}, type : {}, "
-                + "weight : {},salary : {}, sleep : {}", name, age, height, dist,
-                num, type, weight, salary, sleep);
+        try {
+            throw new Exception("Not supported code");
+        } catch (Exception e) {
+            LOG.error("Exception in log example", e);
+        }
     }
 }
