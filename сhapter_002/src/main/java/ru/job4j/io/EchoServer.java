@@ -21,7 +21,8 @@ public class EchoServer {
                              new InputStreamReader(socket.getInputStream()))) {
                     String str;
                     String message = "";
-                    while (!(str = in.readLine()).isEmpty()) {
+                    str = in.readLine();
+                    while (!str.isEmpty()) {
                         System.out.println(str);
                         if (str.contains("msg") && str.contains("GET")) {
                             str = str.substring(str.indexOf(" ") + 1);
