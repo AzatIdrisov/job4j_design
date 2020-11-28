@@ -1,39 +1,36 @@
 package ru.job4j.io;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.*;
-import java.util.function.BiFunction;
 
 public class FileFinder {
-    private static final String FINDBYNAME = "-f";
-    private static final String FINDBYMASK = "-m";
     private final String[] args;
-    private final Map<String, BiFunction<File, String, Boolean>> dispatch = new HashMap<>();
 
     public FileFinder(String[] args) {
         this.args = args;
-        this.dispatch.put(FINDBYNAME, findByName());
-        this.dispatch.put(FINDBYMASK, findByMask());
     }
 
-    public BiFunction<File, String, Boolean> findByName() {
-        return (file, name) -> {
-            if (file.isDirectory()) {
-                return false;
-            }
-            return file.getName().equals(name);
-        };
+    public String[] getArgs() {
+        return args;
     }
 
-    public BiFunction<File, String, Boolean> findByMask() {
-        return (file, mask) -> {
-            if (file.isDirectory() || !file.getName().contains(".")) {
-                return false;
-            }
-            String fileName = file.getName();
-            String fileMask = fileName.substring(fileName.indexOf('.'));
-            return fileMask.equals(mask);
-        };
+    public Boolean findByMask(File file, String mask) {
+        if (file.isDirectory() || !file.getName().contains(".")) {
+            return false;
+        }
+        String fileName = file.getName();
+        String fileMask = fileName.substring(fileName.indexOf('.'));
+        return fileMask.equals(mask);
+    }
+
+    public Boolean findByName(File file, String name) {
+        if (file.isDirectory()) {
+            return false;
+        }
+        return file.getName().equals(name);
     }
 
     public boolean valid() {
@@ -56,13 +53,15 @@ public class FileFinder {
         return true;
     }
 
-    private List<String> findFiles(File directory, BiFunction<File, String, Boolean> rule) {
+    private List<String> findFiles(File directory, String rule, String name) {
         Queue<File> queue = new LinkedList<>();
         queue.offer(directory);
         List<String> foundFiles = new ArrayList<>();
         while (!queue.isEmpty()) {
             File child = queue.poll();
-            if (rule.apply(child, args[3])) {
+            if (rule.equals("-m") && findByMask(child, name)) {
+                foundFiles.add(child.getName());
+            } else if (rule.equals("-f") && findByName(child, name)) {
                 foundFiles.add(child.toPath().toString());
             }
             if (child.isDirectory()) {
@@ -90,9 +89,9 @@ public class FileFinder {
     public static void main(String[] args) {
         FileFinder fileFinder = new FileFinder(args);
         if (fileFinder.valid()) {
-            File directory = new File(args[1]);
-            List<String> foundFiles = fileFinder.findFiles(directory,
-                    fileFinder.dispatch.get(args[2]));
+            File directory = new File(fileFinder.getArgs()[1]);
+            List<String> foundFiles = fileFinder.findFiles(directory, fileFinder.getArgs()[2],
+                    fileFinder.getArgs()[3]);
             save(foundFiles, args[5]);
         }
     }
