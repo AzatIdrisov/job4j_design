@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class FileFinder {
     private final String[] args;
@@ -17,20 +18,32 @@ public class FileFinder {
         return args;
     }
 
-    public Boolean findByMask(File file, String mask) {
-        if (file.isDirectory() || !file.getName().contains(".")) {
-            return false;
-        }
-        String fileName = file.getName();
-        String fileMask = fileName.substring(fileName.indexOf('.'));
-        return fileMask.equals(mask);
+    public Predicate<File> findByName() {
+        return (file) -> {
+            if (file.isDirectory()) {
+                return false;
+            }
+            return file.getName().equals(args[3]);
+        };
     }
 
-    public Boolean findByName(File file, String name) {
-        if (file.isDirectory()) {
-            return false;
+    public Predicate<File> findByMask() {
+        return (file) -> {
+            if (file.isDirectory() || !file.getName().contains(".")) {
+                return false;
+            }
+            String fileName = file.getName();
+            String fileMask = fileName.substring(fileName.indexOf('.'));
+            return fileMask.equals(args[3]);
+        };
+    }
+
+    public Predicate<File> getPredicate() {
+        if (args[2].equals("-f")) {
+            return findByName();
+        } else {
+                return findByMask();
         }
-        return file.getName().equals(name);
     }
 
     public boolean valid() {
@@ -53,16 +66,14 @@ public class FileFinder {
         return true;
     }
 
-    private List<String> findFiles(File directory, String rule, String name) {
+    private List<String> findFiles(File directory, Predicate<File> rule) {
         Queue<File> queue = new LinkedList<>();
         queue.offer(directory);
         List<String> foundFiles = new ArrayList<>();
         while (!queue.isEmpty()) {
             File child = queue.poll();
-            if (rule.equals("-m") && findByMask(child, name)) {
-                foundFiles.add(child.getName());
-            } else if (rule.equals("-f") && findByName(child, name)) {
-                foundFiles.add(child.toPath().toString());
+            if (rule.test(child)) {
+                foundFiles.add(child.getAbsolutePath());
             }
             if (child.isDirectory()) {
                 queue.addAll(Arrays.asList(child.listFiles()));
@@ -76,11 +87,9 @@ public class FileFinder {
                 new BufferedOutputStream(
                         new FileOutputStream(file)
                 ))) {
-            StringBuilder result = new StringBuilder();
             for (String line : log) {
-                result.append(line).append(System.lineSeparator());
+                out.println(line);
             }
-            out.write(result.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,8 +99,7 @@ public class FileFinder {
         FileFinder fileFinder = new FileFinder(args);
         if (fileFinder.valid()) {
             File directory = new File(fileFinder.getArgs()[1]);
-            List<String> foundFiles = fileFinder.findFiles(directory, fileFinder.getArgs()[2],
-                    fileFinder.getArgs()[3]);
+            List<String> foundFiles = fileFinder.findFiles(directory, fileFinder.getPredicate());
             save(foundFiles, args[5]);
         }
     }
