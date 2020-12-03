@@ -19,17 +19,12 @@ public class FileFinder {
     }
 
     public Predicate<File> findByName() {
-        return (file) -> {
-            if (file.isDirectory()) {
-                return false;
-            }
-            return file.getName().equals(args[3]);
-        };
+        return (file) -> file.getName().equals(args[3]);
     }
 
     public Predicate<File> findByMask() {
         return (file) -> {
-            if (file.isDirectory() || !file.getName().contains(".")) {
+            if (!file.getName().contains(".")) {
                 return false;
             }
             String fileName = file.getName();
@@ -42,7 +37,7 @@ public class FileFinder {
         if (args[2].equals("-f")) {
             return findByName();
         } else {
-                return findByMask();
+            return findByMask();
         }
     }
 
