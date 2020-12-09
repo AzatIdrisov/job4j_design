@@ -1,0 +1,20 @@
+create database cats;
+
+create table cats(
+    id serial primary key ,
+    name varchar(255),
+    age smallint,
+    breed text
+)
+
+insert into cats(name, age, breed) values ('Barsik', '3', 'Bengal')
+
+select * from cats
+
+update cats set age = 5;
+
+select * from cats
+
+delete from cats;
+
+select * from cats
