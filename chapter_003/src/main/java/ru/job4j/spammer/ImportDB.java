@@ -24,9 +24,9 @@ public class ImportDB {
     public List<User> load() throws IOException {
         List<User> users = new ArrayList<>();
         try (BufferedReader rd = new BufferedReader(new FileReader(dump))) {
-            rd.lines().forEach(line -> users.
-                    add(new User(line.substring(0, line.indexOf(';')),
-                    line.substring(line.indexOf(';') + 1, line.length() - 1))));
+            rd.lines().forEach(line -> {
+                int index = line.indexOf(';');
+                users.add(new User(line.substring(0, index), line.substring(index + 1, line.length() - 1)));});
         }
         return users;
     }
