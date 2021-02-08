@@ -26,7 +26,9 @@ public class ImportDB {
         try (BufferedReader rd = new BufferedReader(new FileReader(dump))) {
             rd.lines().forEach(line -> {
                 int index = line.indexOf(';');
-                users.add(new User(line.substring(0, index), line.substring(index + 1, line.length() - 1)));});
+                users.add(new User(line.substring(0, index),
+                        line.substring(index + 1, line.length() - 1)));
+            });
         }
         return users;
     }
@@ -39,7 +41,8 @@ public class ImportDB {
                 cfg.getProperty("jdbc.password")
         )) {
             for (User user : users) {
-                try (PreparedStatement ps = cnt.prepareStatement("insert into users (name, email) values (? ,?)")) {
+                try (PreparedStatement ps = cnt
+                        .prepareStatement("insert into users (name, email) values (? ,?)")) {
                     ps.setString(1, user.name);
                     ps.setString(2, user.email);
                     ps.execute();
@@ -49,8 +52,8 @@ public class ImportDB {
     }
 
     public static class User {
-        String name;
-        String email;
+        private String name;
+        private String email;
 
         public User(String name, String email) {
             this.name = name;
@@ -61,7 +64,7 @@ public class ImportDB {
     public static void main(String[] args) throws Exception {
         Properties cfg = new Properties();
         try (InputStream in = ImportDB.class.getClassLoader()
-                .getResourceAsStream("app.properties")){
+                .getResourceAsStream("app.properties")) {
             cfg.load(in);
         }
         ImportDB db = new ImportDB(cfg, "./dump.txt");

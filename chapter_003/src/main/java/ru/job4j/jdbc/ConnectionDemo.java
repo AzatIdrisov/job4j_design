@@ -8,11 +8,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionDemo {
-    public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {
+    public static void main(String[] args) throws ClassNotFoundException,
+            SQLException, IOException {
         Class.forName("org.postgresql.Driver");
         Settings settings = new Settings();
         ClassLoader loader = settings.getClass().getClassLoader();
-        try (InputStream io = loader.getResourceAsStream("app.properties")){
+        try (InputStream io = loader.getResourceAsStream("app.properties")) {
             settings.load(io);
         }
         String url = settings.getValue("url");
