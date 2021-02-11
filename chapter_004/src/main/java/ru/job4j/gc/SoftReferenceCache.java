@@ -12,11 +12,14 @@ public class SoftReferenceCache {
 
     public String get(String key) {
         String result;
-        SoftReference<String> reference = cache.get(key);
-        if (reference == null) {
-            result = load(key);
+
+        if (cache.containsKey(key)) {
+            result = cache.get(key).get();
+            if (result == null) {
+                result = load(key);
+            }
         } else {
-            result = reference.get();
+            result = load(key);
         }
         return result;
     }
