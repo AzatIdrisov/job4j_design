@@ -11,14 +11,8 @@ public class SoftReferenceCache {
     private Map<String, SoftReference<String>> cache = new HashMap<>();
 
     public String get(String key) {
-        String result;
-
-        if (cache.containsKey(key)) {
-            result = cache.get(key).get();
-            if (result == null) {
-                result = load(key);
-            }
-        } else {
+        String result = cache.getOrDefault(key, new SoftReference<>("")).get();
+        if (result == null || result.isEmpty()) {
             result = load(key);
         }
         return result;
