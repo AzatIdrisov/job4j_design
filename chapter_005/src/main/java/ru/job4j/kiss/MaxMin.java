@@ -2,22 +2,25 @@ package ru.job4j.kiss;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 public class MaxMin {
 
     public <T> T max(List<T> value, Comparator<T> comparator) {
-        T max = value.get(0);
-        for (T el : value) {
-            max = comparator.compare(max, el) < 0 ? el : max;
-        }
-        return max;
+        return reduce(value, (x, y) -> comparator.compare(x, y) > 0);
     }
 
     public <T> T min(List<T> value, Comparator<T> comparator) {
-        T min = value.get(0);
+        return reduce(value, (x, y) -> comparator.compare(x, y) < 0);
+    }
+
+    public <T> T reduce(List<T> value, BiPredicate<T, T> predicate) {
+        T result = null;
         for (T el : value) {
-            min = comparator.compare(min, el) > 0 ? el : min;
+            if (predicate.test(el, result)) {
+                result = el;
+            }
         }
-        return min;
+        return result;
     }
 }
