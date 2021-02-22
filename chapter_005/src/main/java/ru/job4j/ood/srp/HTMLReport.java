@@ -15,30 +15,29 @@ public class HTMLReport implements Report {
     public String generate(Predicate<Employee> filter) {
         StringBuilder result = new StringBuilder();
         List<Employee> employees = store.findBy(filter);
-        result.append("<html>\n"
-                + "<head>\n"
-                + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
-                + "<title>HTML Report</title>\n"
-                + "</head>\n"
-                + "<body>\n"
-                + "<table border=\"1\">\n"
-                + "<tr>\n"
-                + "<th> Name </th>\n"
-                + "<th> Hired </th>\n"
-                + "<th> Fired </th>\n"
-                + "<th> Salary </th>\n"
-                + "</tr>\n");
+        result.append("<html>\n")
+                .append("<head>\n")
+                .append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n")
+                .append("<title>HTML Report</title>\n")
+                .append("</head>\n")
+                .append("<body>\n")
+                .append("<table border=\"1\">\n")
+                .append("<tr>\n")
+                .append("<th> Name </th>\n")
+                .append("<th> Hired </th>\n")
+                .append("<th> Fired </th>\n")
+                .append("<th> Salary </th>\n")
+                .append("</tr>\n");
         for (Employee employee : employees) {
-            result.append("<tr>\n"
-                    + "<th> " + employee.getName() + "</th>\n"
-                    + "<th> " + employee.getHired() + "</th>\n"
-                    + "<th> " + employee.getFired() + "</th>\n"
-                    + "<th> " + employee.getSalary() + "</th>\n"
-                    + "</tr>\n");
+            result.append("<tr>\n").append("<th> ").append(employee.getName()).append("</th>\n")
+                    .append("<th> ").append(employee.getHired()).append("</th>\n")
+                    .append("<th> ").append(employee.getFired()).append("</th>\n")
+                    .append("<th> ").append(employee.getSalary()).append("</th>\n")
+                    .append("</tr>\n");
         }
-        result.append("</table>\n"
-                + "</body>\n"
-                + "</html>");
+        result.append("</table>\n")
+                .append("</body>\n")
+                .append("</html>");
         return result.toString();
     }
 }
