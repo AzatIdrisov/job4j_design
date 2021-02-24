@@ -4,8 +4,6 @@ import org.junit.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,8 +18,8 @@ public class XMLReportTest {
         store.add(worker);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-        TimeZone tz = TimeZone.getTimeZone("GMT+5");
-        String timeZone = tz.getDisplayName(true, TimeZone.SHORT, Locale.ENGLISH).substring(3);
+        //TimeZone tz = TimeZone.getTimeZone("GMT+5");
+        //String timeZone = tz.getDisplayName(true, TimeZone.SHORT, Locale.ENGLISH).substring(3);
         Report engine = new XMLReport(store);
         StringBuilder expect = new StringBuilder();
         expect.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n")
@@ -29,12 +27,14 @@ public class XMLReportTest {
                 .append("    <name>").append(worker.getName()).append("</name>\n")
                 .append("    <hired>").append(dateFormat.format(worker.getHired().getTime()))
                 .append("T").append(timeFormat.format(worker.getHired().getTime()))
-                .append(timeZone).append("</hired>\n")
+                .append("<Z/hired>\n")
                 .append("    <fired>").append(dateFormat.format(worker.getFired().getTime()))
                 .append("T").append(timeFormat.format(worker.getFired().getTime()))
-                .append(timeZone).append("</fired>\n")
+                .append("<Z/fired>\n")
                 .append("    <salary>").append(worker.getSalary()).append("</salary>\n")
                 .append("</employee>\n");
+        System.out.println(expect);
+        System.out.println(engine.generate(em -> true));
         assertThat(engine.generate(em -> true), is(expect.toString()));
     }
 
