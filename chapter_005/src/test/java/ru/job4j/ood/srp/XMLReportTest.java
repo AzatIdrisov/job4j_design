@@ -27,14 +27,14 @@ public class XMLReportTest {
                 .append("    <name>").append(worker.getName()).append("</name>\n")
                 .append("    <hired>").append(dateFormat.format(worker.getHired().getTime()))
                 .append("T").append(timeFormat.format(worker.getHired().getTime()))
-                .append("<Z/hired>\n")
+                .append("Z</hired>\n")
                 .append("    <fired>").append(dateFormat.format(worker.getFired().getTime()))
                 .append("T").append(timeFormat.format(worker.getFired().getTime()))
-                .append("<Z/fired>\n")
+                .append("Z</fired>\n")
                 .append("    <salary>").append(worker.getSalary()).append("</salary>\n")
                 .append("</employee>\n");
-        System.out.println(expect);
-        System.out.println(engine.generate(em -> true));
+        //System.out.println(expect);
+        //System.out.println(engine.generate(em -> true));
         assertThat(engine.generate(em -> true), is(expect.toString()));
     }
 
