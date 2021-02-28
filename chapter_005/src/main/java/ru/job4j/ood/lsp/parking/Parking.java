@@ -6,9 +6,15 @@ public interface Parking {
 
     boolean park(Car car);
 
-    int getSize();
+    int getPassengersSize();
 
-    int getFreeSize();
+    int getTruckSize();
 
-    List<Car> getAllCars();
+    int getFreePassengersPlaces();
+
+    int getFreeTruckPlaces();
+
+    List<Car> getPassengersCars();
+
+    List<Car> getTruckCars();
 }
