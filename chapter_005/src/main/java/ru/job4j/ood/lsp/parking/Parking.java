@@ -6,6 +6,8 @@ public interface Parking {
 
     boolean park(Car car);
 
+    boolean parkTruck(Truck truck);
+
     int getPassengersSize();
 
     int getTruckSize();
