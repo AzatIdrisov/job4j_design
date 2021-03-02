@@ -1,6 +1,6 @@
 package ru.job4j.ood.lsp.parking;
 
-public class SimpleTruck implements Car {
+public class SimpleTruck implements Truck {
 
     private int size;
 

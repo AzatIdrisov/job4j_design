@@ -18,24 +18,24 @@ public class SimpleParkingTest {
     @Test
     public void whenParkTruckCarOnTruckPlace() {
         Parking parking = new SimpleParking(10, 5);
-        Car car = new SimpleTruck(5);
-        parking.park(car);
-        assertThat(parking.getTruckCars().get(0), is(car));
+        Truck truck = new SimpleTruck(5);
+        parking.parkTruck(truck);
+        assertThat(parking.getTruckCars().get(0), is(truck));
     }
 
     @Test
     public void whenParkTruckCarOnPassengersPlace() {
         Parking parking = new SimpleParking(10, 0);
-        Car car = new SimpleTruck(5);
-        parking.park(car);
+        Truck truck = new SimpleTruck(5);
+        parking.parkTruck(truck);
         assertThat(parking.getFreePassengersPlaces(), is(5));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = IllegalStateException.class)
     public void whenNotEnoughParkingPlaces() {
         Parking parking = new SimpleParking(10, 0);
-        Car car = new SimpleTruck(15);
-        parking.park(car);
+        Truck truck = new SimpleTruck(15);
+        parking.parkTruck(truck);
         assertThat(parking.getFreePassengersPlaces(), is(0));
     }
 
