@@ -39,7 +39,7 @@ public class ControlQualityTest {
     public void whenFoodMovingInShopWithDiscount() {
         List<Store> stores = Arrays.asList(new Warehouse(), new Shop(), new Trash());
         ArrayList<Food> listFood = new ArrayList<>(List.of(
-                new Meat("Meat", new GregorianCalendar(2021, Calendar.FEBRUARY, 28),
+                new Meat("Meat", new GregorianCalendar(2021, Calendar.MARCH, 10),
                         new GregorianCalendar(2021, Calendar.FEBRUARY, 1), 30.0, 30)));
         ControlQuality control = new ControlQuality(stores);
         control.distribute(listFood);
@@ -57,6 +57,21 @@ public class ControlQualityTest {
         control.distribute(listFood);
         Food expected = new Meat("Meat", new GregorianCalendar(2021, Calendar.FEBRUARY, 10),
                 new GregorianCalendar(2021, Calendar.FEBRUARY, 1), 30.0, 30);
+        assertThat(stores.get(2).getAll().get(0).getName(), is(expected.getName()));
+    }
+
+    @Test
+    public void whenResortFromWarehouseToTrash() {
+        List<Store> stores = Arrays.asList(new Warehouse(), new Shop(), new Trash());
+        ArrayList<Food> listFood = new ArrayList<>(List.of(
+                new Milk("V", new GregorianCalendar(2021, Calendar.MARCH, 10),
+                        new GregorianCalendar(2021, Calendar.MARCH, 1), 30.0, 30)));
+        ControlQuality control = new ControlQuality(stores);
+        control.distribute(listFood);
+        stores.get(0).getAll().get(0).setExpiryDate(new GregorianCalendar(2021, Calendar.MARCH, 2));
+        Food expected = new Milk("V", new GregorianCalendar(2021, Calendar.MARCH, 2),
+                new GregorianCalendar(2021, Calendar.MARCH, 1), 30.0, 30);
+        control.resort();
         assertThat(stores.get(2).getAll().get(0).getName(), is(expected.getName()));
     }
 
