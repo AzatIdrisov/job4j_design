@@ -64,7 +64,7 @@ public class ControlQualityTest {
     public void whenResortFromWarehouseToTrash() {
         List<Store> stores = Arrays.asList(new Warehouse(), new Shop(), new Trash());
         ArrayList<Food> listFood = new ArrayList<>(List.of(
-                new Milk("V", new GregorianCalendar(2021, Calendar.MARCH, 10),
+                new Milk("V", new GregorianCalendar(2021, Calendar.MARCH, 30),
                         new GregorianCalendar(2021, Calendar.MARCH, 1), 30.0, 30)));
         ControlQuality control = new ControlQuality(stores);
         control.distribute(listFood);
@@ -73,6 +73,7 @@ public class ControlQualityTest {
                 new GregorianCalendar(2021, Calendar.MARCH, 1), 30.0, 30);
         control.resort();
         assertThat(stores.get(2).getAll().get(0).getName(), is(expected.getName()));
+        assertThat(stores.get(0).getAll().size(), is(0));
     }
 
 }
