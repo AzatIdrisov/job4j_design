@@ -1,8 +1,18 @@
 package ru.job4j.tdd;
 
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+
 public class CinemaTest {
 
-/*    @Test
+    @Test
     public void buy() {
         Account account = new AccountCinema();
         Cinema cinema = new Cinema3D();
@@ -37,5 +47,5 @@ public class CinemaTest {
         List<Session> sessions = cinema.find(session -> false);
         assertThat(sessions.isEmpty(), is(true));
     }
-    */
+
 }

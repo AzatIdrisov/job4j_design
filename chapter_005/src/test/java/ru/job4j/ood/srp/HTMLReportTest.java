@@ -17,28 +17,27 @@ public class HTMLReportTest {
         store.add(worker);
         Report engine = new HTMLReport(store);
         StringBuilder expect = new StringBuilder();
-        expect.append("<html>\n"
-                + "<head>\n"
-                + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
-                + "<title>HTML Report</title>\n"
-                + "</head>\n"
-                + "<body>\n"
-                + "<table border=\"1\">\n"
-                + "<tr>\n"
-                + "<th> Name </th>\n"
-                + "<th> Hired </th>\n"
-                + "<th> Fired </th>\n"
-                + "<th> Salary </th>\n"
-                + "</tr>\n");
-        expect.append("<tr>\n"
-                + "<th> " + worker.getName() + "</th>\n"
-                + "<th> " + worker.getHired() + "</th>\n"
-                + "<th> " + worker.getFired() + "</th>\n"
-                + "<th> " + worker.getSalary() + "</th>\n"
-                + "</tr>\n");
-        expect.append("</table>\n"
-                + "</body>\n"
-                + "</html>");
+        expect.append("<html>\n")
+                .append("<head>\n")
+                .append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n")
+                .append("<title>HTML Report</title>\n")
+                .append("</head>\n")
+                .append("<body>\n")
+                .append("<table border=\"1\">\n")
+                .append("<tr>\n")
+                .append("<th> Name </th>\n")
+                .append("<th> Hired </th>\n")
+                .append("<th> Fired </th>\n")
+                .append("<th> Salary </th>\n")
+                .append("</tr>\n");
+        expect.append("<tr>\n").append("<th> ").append(worker.getName()).append("</th>\n")
+                .append("<th> ").append(worker.getHired()).append("</th>\n")
+                .append("<th> ").append(worker.getFired()).append("</th>\n")
+                .append("<th> ").append(worker.getSalary()).append("</th>\n")
+                .append("</tr>\n");
+        expect.append("</table>\n")
+                .append("</body>\n")
+                .append("</html>");
         assertThat(engine.generate(em -> true), is(expect.toString()));
     }
 

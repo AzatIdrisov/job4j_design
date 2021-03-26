@@ -15,7 +15,10 @@ public class MaxMin {
     }
 
     public <T> T reduce(List<T> value, BiPredicate<T, T> predicate) {
-        T result = null;
+        if (value.size() == 0) {
+            throw new IllegalArgumentException();
+        }
+        T result = value.get(0);
         for (T el : value) {
             if (predicate.test(el, result)) {
                 result = el;
